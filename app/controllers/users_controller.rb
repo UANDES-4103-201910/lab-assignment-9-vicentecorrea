@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :is_user_logged_in?
+  # before_action :is_user_logged_in?
 
   # GET /users
   # GET /users.json
@@ -26,19 +26,40 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    #complete this method
+    @user = User.new(user_params)
+    respond_to do |format|
+      if @user.save
+        format.html { redirect_to @user, notice: 'User was successfully created.' }
+        format.json { render :show, status: :created, location: @user }
+      else
+        format.html { render :new }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    #complete this method
+    respond_to do |format|
+      if @user.update(user_params)
+        format.html { redirect_back(fallback_location: root_path); flash[:notice] = 'The password was successfully updated.' }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { render :edit }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    #complete this method
+    @user.destroy
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: root_path); flash[:notice] = 'The user was successfully deleted.' }
+      format.json { head :no_content }
+    end
   end
 
   private
